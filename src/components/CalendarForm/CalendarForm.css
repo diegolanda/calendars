@@ -1,0 +1,27 @@
+.calendar-form {
+  margin: 15px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.calendar-form input {
+  margin: 0 15px 0 15px;
+  padding: 5px;
+  text-align: center;
+}
+
+.calendar-form input.error {
+  border: 1px solid red;
+}
+
+.calendar-form input.small {
+  width: 45px;
+}
+
+.calendar-form button {
+  background: rgb(102, 219, 249);
+  color: white;
+  padding: 5px;
+  cursor: pointer;
+}
