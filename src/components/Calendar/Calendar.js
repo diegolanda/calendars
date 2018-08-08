@@ -18,25 +18,25 @@ class Calendar extends Component {
     '9': 'October',
     '10': 'November',
     '11': 'December',
-  }
+  };
 
   state = {
     years: [],
     holidays: {},
   };
 
-  handleCreate = (data) => {
+  handleCreate = data => {
     const { date, days, country } = data;
     const initial = moment(date);
     const final = moment(date).add(days, 'day');
 
     const years = [];
 
-    while(initial.isSameOrBefore(final)) {
+    while (initial.isSameOrBefore(final)) {
       const y = initial.year();
       let yIdx = years.findIndex(x => x.label === y);
 
-      if(yIdx === -1) {
+      if (yIdx === -1) {
         years.push({
           label: y,
           months: {},
@@ -47,17 +47,17 @@ class Calendar extends Component {
 
       const m = initial.month();
 
-      if(!years[yIdx].months[m]) {
+      if (!years[yIdx].months[m]) {
         years[yIdx].months[m] = {};
       }
 
       years[yIdx].months[m][initial.date()] = moment(initial.format('YYYY-MM-DD'));
-      
+
       initial.add(1, 'day');
     }
 
     const holidays = [];
-    
+
     years.forEach(year => {
       if (year.label >= moment().year()) {
         return;
@@ -65,8 +65,10 @@ class Calendar extends Component {
 
       holidays.push(
         fetch(
-          `https://holidayapi.com/v1/holidays?key=7f7fb480-1ccc-4458-bd73-e11e5614b345&country=${country}&year=${year.label}`).then(res => res.json()
-        )
+          `https://holidayapi.com/v1/holidays?key=7f7fb480-1ccc-4458-bd73-e11e5614b345&country=${country}&year=${
+            year.label
+          }`
+        ).then(res => res.json())
       );
     });
 
@@ -83,16 +85,16 @@ class Calendar extends Component {
 
           holidays[holiday] = year.holidays[holiday].find(x => x.public);
         });
-      })
+      });
 
       this.setState({
         years,
         holidays,
       });
-    })
-  }
+    });
+  };
 
-  renderWeeks = (month) => {
+  renderWeeks = month => {
     const { holidays } = this.state;
     const keys = Object.keys(month);
 
@@ -115,20 +117,23 @@ class Calendar extends Component {
 
     return weeks.map(w => (
       <div className="week" key={`week_${w.id}`}>
-        {
-          w.week.map((day, idx) => (
-            <div
-              key={`week_${w.id}_day_${day.date ? day.date() : 0}_${idx}`} 
-              className={`day ${(day.date ? day.date() : 0) === 0 ? 'blank' : ''} ${holidays[(day.date ? day.format('YYYY-MM-DD') : 0)] ? 'holiday' : ''}`}
-              title={`${holidays[(day.date ? day.format('YYYY-MM-DD') : 0)] ? holidays[(day.date ? day.format('YYYY-MM-DD') : 0)].name : ''}`}>
-
-              { day !== 0 ? day.date ? day.date() : 0 : '' }
-            </div>
-          ))
-        }
+        {w.week.map((day, idx) => (
+          <div
+            key={`week_${w.id}_day_${day.date ? day.date() : 0}_${idx}`}
+            className={`day ${(day.date ? day.date() : 0) === 0 ? 'blank' : ''} ${
+              holidays[day.date ? day.format('YYYY-MM-DD') : 0] ? 'holiday' : ''
+            }`}
+            title={`${
+              holidays[day.date ? day.format('YYYY-MM-DD') : 0]
+                ? holidays[day.date ? day.format('YYYY-MM-DD') : 0].name
+                : ''
+            }`}>
+            {day !== 0 ? (day.date ? day.date() : 0) : ''}
+          </div>
+        ))}
       </div>
-    ))
-  }
+    ));
+  };
 
   renderMonths = (year, months) => {
     const keys = Object.keys(months);
@@ -148,54 +153,40 @@ class Calendar extends Component {
             <div className={`day label`}>S</div>
           </div>
           <span>{this.months[month]}</span>
-          {
-            this.renderWeeks(months[month])
-          }
+          {this.renderWeeks(months[month])}
         </div>
-      )
+      );
     });
 
-    return (
-      <React.Fragment>
-        {
-          monthsArray.map(x => x)
-        }
-      </React.Fragment>
-    )
-  }
+    return <React.Fragment>{monthsArray.map(x => x)}</React.Fragment>;
+  };
 
   renderYears = () => {
     const { years } = this.state;
 
     return (
       <React.Fragment>
-        {
-          years.map(year => (
-            <div key={`year_${year.label}`} className="year">
-              <span>{year.label} {year.label >= moment().year() ? `(Holidays supported up to ${moment().year() - 1})` : '(Hover to see holiday name)'}</span>
-              <div className="year-container">
-                {
-                  this.renderMonths(year.label, year.months)
-                }
-              </div>
-            </div>
-          ))
-        }
+        {years.map(year => (
+          <div key={`year_${year.label}`} className="year">
+            <span>
+              {year.label}{' '}
+              {year.label >= moment().year()
+                ? `(Holidays supported up to ${moment().year() - 1})`
+                : '(Hover to see holiday name)'}
+            </span>
+            <div className="year-container">{this.renderMonths(year.label, year.months)}</div>
+          </div>
+        ))}
       </React.Fragment>
-    )
-  }
+    );
+  };
 
   render() {
-    
     return (
       <div className="calendar">
-        <CalendarForm onCreate={data => this.handleCreate(data)}/>
+        <CalendarForm onCreate={data => this.handleCreate(data)} />
 
-        <div className="calendar-container">
-          {
-            this.renderYears()
-          }
-        </div>
+        <div className="calendar-container">{this.renderYears()}</div>
       </div>
     );
   }

@@ -13,16 +13,16 @@ class CalendarForm extends Component {
 
   changeState = (prop, partial) => {
     this.setState({
-      [prop]: partial
+      [prop]: partial,
     });
-  }
+  };
 
   hasErrors = () => {
     const errors = {};
 
     const { date, days, country } = this.state;
 
-    if(!moment(date, 'YYYY-MM-DD').isValid()) {
+    if (!moment(date, 'YYYY-MM-DD').isValid()) {
       errors.date = true;
     }
 
@@ -35,7 +35,7 @@ class CalendarForm extends Component {
     }
 
     return errors;
-  }
+  };
 
   handleRender = () => {
     const errors = this.hasErrors();
@@ -58,16 +58,32 @@ class CalendarForm extends Component {
         country,
       });
     }
-  }
+  };
 
   render() {
     const { date, days, country, errors } = this.state;
 
     return (
       <div className="calendar-form">
-        <input className={`${errors.date ? 'error' : ''}`}placeholder="Starting (YYYY-MM-DD)" onChange={({target}) => this.changeState('date', target.value)} value={date}/>
-        <input className={`small ${errors.days ? 'error' : ''}`} placeholder="Days" onChange={({target}) => this.changeState('days', target.value)} value={days}/>
-        <input className={`small ${errors.country ? 'error' : ''}`} placeholder="Code" onChange={({target}) => this.changeState('country', target.value)} value={country}maxLength={2}/>
+        <input
+          className={`${errors.date ? 'error' : ''}`}
+          placeholder="Starting (YYYY-MM-DD)"
+          onChange={({ target }) => this.changeState('date', target.value)}
+          value={date}
+        />
+        <input
+          className={`small ${errors.days ? 'error' : ''}`}
+          placeholder="Days"
+          onChange={({ target }) => this.changeState('days', target.value)}
+          value={days}
+        />
+        <input
+          className={`small ${errors.country ? 'error' : ''}`}
+          placeholder="Code"
+          onChange={({ target }) => this.changeState('country', target.value)}
+          value={country}
+          maxLength={2}
+        />
         <button onClick={() => this.handleRender()}>Render</button>
       </div>
     );
