@@ -5,7 +5,7 @@ import './CalendarForm.css';
 
 class CalendarForm extends Component {
   state = {
-    date: moment(new Date()).format('MM/DD/YYYY'),
+    date: moment().format('YYYY-MM-DD'),
     days: 5,
     country: 'US',
     errors: {},
@@ -22,7 +22,7 @@ class CalendarForm extends Component {
 
     const { date, days, country } = this.state;
 
-    if(!moment(date).isValid()) {
+    if(!moment(date, 'YYYY-MM-DD').isValid()) {
       errors.date = true;
     }
 
@@ -65,7 +65,7 @@ class CalendarForm extends Component {
 
     return (
       <div className="calendar-form">
-        <input className={`${errors.date ? 'error' : ''}`}placeholder="Starting Date" onChange={({target}) => this.changeState('date', target.value)} value={date}/>
+        <input className={`${errors.date ? 'error' : ''}`}placeholder="Starting (YYYY-MM-DD)" onChange={({target}) => this.changeState('date', target.value)} value={date}/>
         <input className={`small ${errors.days ? 'error' : ''}`} placeholder="Days" onChange={({target}) => this.changeState('days', target.value)} value={days}/>
         <input className={`small ${errors.country ? 'error' : ''}`} placeholder="Code" onChange={({target}) => this.changeState('country', target.value)} value={country}maxLength={2}/>
         <button onClick={() => this.handleRender()}>Render</button>

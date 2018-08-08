@@ -19,8 +19,10 @@ class Calendar extends Component {
     '10': 'November',
     '11': 'December',
   }
+
   state = {
     years: [],
+    holidays: {},
   };
 
   handleCreate = (data) => {
@@ -54,12 +56,44 @@ class Calendar extends Component {
       initial.add(1, 'day');
     }
 
-    this.setState({
-      years,
+    const holidays = [];
+    
+    years.forEach(year => {
+      if (year.label >= moment().year()) {
+        return;
+      }
+
+      holidays.push(
+        fetch(
+          `https://holidayapi.com/v1/holidays?key=7f7fb480-1ccc-4458-bd73-e11e5614b345&country=${country}&year=${year.label}`).then(res => res.json()
+        )
+      );
     });
+
+    Promise.all(holidays).then(data => {
+      const holidays = {};
+
+      data.forEach(year => {
+        const dates = Object.keys(year.holidays);
+
+        dates.forEach(holiday => {
+          if (!year.holidays[holiday].find(x => x.public)) {
+            return;
+          }
+
+          holidays[holiday] = year.holidays[holiday].find(x => x.public);
+        });
+      })
+
+      this.setState({
+        years,
+        holidays,
+      });
+    })
   }
 
   renderWeeks = (month) => {
+    const { holidays } = this.state;
     const keys = Object.keys(month);
 
     const weeks = [];
@@ -76,15 +110,19 @@ class Calendar extends Component {
         wIdx = weeks.length - 1;
       }
 
-      weeks[wIdx].week[month[day].weekday()] = month[day].date();
+      weeks[wIdx].week[month[day].weekday()] = month[day];
     });
 
     return weeks.map(w => (
       <div className="week" key={`week_${w.id}`}>
         {
           w.week.map((day, idx) => (
-            <div key={`week_${w.id}_day_${day}_${idx}`} className={`day ${day === 0 ? 'blank' : ''}`}>
-              { day !== 0 ? day : '' }
+            <div
+              key={`week_${w.id}_day_${day.date ? day.date() : 0}_${idx}`} 
+              className={`day ${(day.date ? day.date() : 0) === 0 ? 'blank' : ''} ${holidays[(day.date ? day.format('YYYY-MM-DD') : 0)] ? 'holiday' : ''}`}
+              title={`${holidays[(day.date ? day.format('YYYY-MM-DD') : 0)] ? holidays[(day.date ? day.format('YYYY-MM-DD') : 0)].name : ''}`}>
+
+              { day !== 0 ? day.date ? day.date() : 0 : '' }
             </div>
           ))
         }
@@ -134,7 +172,7 @@ class Calendar extends Component {
         {
           years.map(year => (
             <div key={`year_${year.label}`} className="year">
-              <span>{year.label}</span>
+              <span>{year.label} {year.label >= moment().year() ? `(Holidays supported up to ${moment().year() - 1})` : '(Hover to see holiday name)'}</span>
               <div className="year-container">
                 {
                   this.renderMonths(year.label, year.months)

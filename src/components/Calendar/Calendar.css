@@ -51,3 +51,8 @@
 .calendar-container .year .year-container .month .week .day.blank {
   background: lightgray;
 }
+
+.calendar-container .year .year-container .month .week .day.holiday {
+  background: red;
+  cursor: pointer;
+}
