@@ -1,5 +1,5 @@
-import { CalendarForm } from './CalendarForm';
+import { Calendar } from './Calendar';
 
 export {
-  CalendarForm
+  Calendar
 };

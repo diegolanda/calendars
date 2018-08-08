@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { CalendarForm } from './components';
+import { Calendar } from './components';
 
 import logo from './logo.svg';
 import './App.css';
@@ -13,7 +13,7 @@ class App extends Component {
           <h1 className="App-title">Developed with React!</h1>
         </header>
         <div className="App-intro">
-          <CalendarForm />
+          <Calendar />
         </div>
       </div>
     );

@@ -1,0 +1,53 @@
+.calendar-container {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  text-align: left;
+  padding: 25px;
+}
+
+.calendar-container .year>span{
+  border-bottom: 1px solid gray;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.calendar-container .year .year-container {
+  margin-top: 25px;
+  margin-bottom: 25px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.calendar-container .year .year-container .month {
+  padding: 10px;
+  width: calc(100% * (1/4) - 25px);
+  text-align: center;
+}
+
+.calendar-container .year .year-container .month span {
+  font-weight: bold;
+  line-height: 34px;
+}
+
+.calendar-container .year .year-container .month .week {
+  display: flex;
+}
+
+.calendar-container .year .year-container .month .week .day {
+  flex: 1;
+  height: 50px;
+  background: yellow;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid white;
+}
+
+.calendar-container .year .year-container .month .week .day.label {
+  background: white;
+}
+
+.calendar-container .year .year-container .month .week .day.blank {
+  background: lightgray;
+}
